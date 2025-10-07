@@ -1,5 +1,6 @@
 package com.example.iBankingPay.service;
 
+import com.example.iBankingPay.dto.PaymentResponse;
 import com.example.iBankingPay.entity.Otp;
 import com.example.iBankingPay.entity.Payment;
 import com.example.iBankingPay.entity.StudentFee;
@@ -61,7 +62,7 @@ public class PaymentService {
         mailService.sendEmail(user.getEmail(), "Your OTP Code", "OTP: " + otp.getCode());
     }
 
-    public void confirmPayment(Long userId, String studentId, String otpCode) {
+    public PaymentResponse confirmPayment(Long userId, String studentId, String otpCode) {
         otpService.validateOtp(userId, otpCode);
 
         User user = userRepository.findById(userId)
@@ -83,7 +84,19 @@ public class PaymentService {
         payment.setStatus("SUCCESS");
         paymentRepository.save(payment);
 
-        mailService.sendEmail(user.getEmail(), "Payment Success",
-                "Payment for " + fee.getStudentName() + " successful.");
+        mailService.sendEmail(
+                user.getEmail(),
+                "Payment Success",
+                "Payment for " + fee.getStudentName() + " successful."
+        );
+
+        return new PaymentResponse(
+                "Payment successful.",
+                user.getBalance(),
+                user,
+                fee,
+                payment
+        );
     }
+
 }

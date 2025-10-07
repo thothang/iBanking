@@ -1,10 +1,13 @@
 package com.example.iBankingPay.controller;
 
+import com.example.iBankingPay.dto.ApiResponse;
+import com.example.iBankingPay.dto.PaymentRequest;
 import com.example.iBankingPay.service.PaymentService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "http://localhost:5173") // nếu frontend chạy Vite
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/payment")
 public class PaymentController {
@@ -16,15 +19,16 @@ public class PaymentController {
 
     @PostMapping("/start")
     @PreAuthorize("isAuthenticated()")
-    public String startPayment(@RequestParam Long userId, @RequestParam String studentId) {
-        paymentService.startPayment(userId, studentId);
-        return "OTP sent to email.";
+    public ResponseEntity<ApiResponse> startPayment(@RequestBody PaymentRequest request) {
+        paymentService.startPayment(request.getUserId(), request.getStudentId());
+        return ResponseEntity.ok(new ApiResponse("OTP sent to email."));
     }
 
     @PostMapping("/confirm")
     @PreAuthorize("isAuthenticated()")
-    public String confirmPayment(@RequestParam Long userId, @RequestParam String studentId, @RequestParam String otp) {
-        paymentService.confirmPayment(userId, studentId, otp);
-        return "Payment successful.";
+    public ResponseEntity<?> confirmPayment(@RequestBody PaymentRequest request) {
+        var response = paymentService.confirmPayment(request.getUserId(), request.getStudentId(), request.getOtp());
+        return ResponseEntity.ok(response);
     }
+
 }

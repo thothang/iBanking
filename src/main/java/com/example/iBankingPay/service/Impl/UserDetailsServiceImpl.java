@@ -1,4 +1,4 @@
-package com.example.iBankingPay.service;
+package com.example.iBankingPay.service.Impl;
 
 import com.example.iBankingPay.entity.User;
 import com.example.iBankingPay.repository.UserRepository;

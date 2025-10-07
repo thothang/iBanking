@@ -13,7 +13,7 @@ import java.util.Map;
 @Component
 public class JwtUtil {
     private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-    private final long expirationMs = 86400000; // 1 day
+    private final long expirationMs = 1000 * 60 * 60;
 
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
